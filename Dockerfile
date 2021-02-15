@@ -19,6 +19,7 @@ ENV ALSA_SLAVE_PCM 'plughw:0,0'
 ENV ALSA_SOUND_LEVEL '100%'
 ENV VERBOSE 'false'
 ENV EQUALIZATION ''
+ENV NORMALIZE_AUDIO 'false'
 
 ADD /asound.conf /
 ADD /equalizer.sh /
