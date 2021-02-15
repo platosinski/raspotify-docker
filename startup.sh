@@ -8,11 +8,11 @@ echo "Preparing container..."
 echo "SPOTIFY_NAME=$SPOTIFY_NAME"
 echo "BACKEND_NAME=$BACKEND_NAME"
 echo "DEVICE_NAME=$DEVICE_NAME"
-echo "NORMALISATION=$NORMALISE_AUDIO"
+echo "NORMALIZATION=$NORMALIZE_AUDIO"
 DEVICE=""
 BACKEND=""
 VERB=""
-NORMALISATION="--initial-volume=100"
+NORMALIZATION="--initial-volume=100"
 if [ "$VERBOSE" == "true" ]; then
   VERB="-v"
 fi
@@ -32,8 +32,8 @@ if [ "$DEVICE_NAME" == "equal" ]; then
   fi
 fi
 
-if [ "$NORMALISE_AUDIO" == "true" ]; then
-  NORMALISATION="--enable-volume-normalisation --initial-volume=100"
+if [ "$NORMALIZE_AUDIO" == "true" ]; then
+  NORMALIZATION="--enable-volume-normalisation --initial-volume=100"
 fi
 
 echo "/etc/asound.conf"
