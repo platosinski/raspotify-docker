@@ -1,9 +1,4 @@
-# rpi-spotify
-[<img src="https://img.shields.io/docker/pulls/flaviostutz/rpi-spotify"/>](https://hub.docker.com/r/flaviostutz/rpi-spotify)
-[<img src="https://img.shields.io/docker/automated/flaviostutz/rpi-spotify"/>](https://hub.docker.com/r/flaviostutz/rpi-spotify)
-
-[![](https://images.microbadger.com/badges/version/flaviostutz/rpi-spotify.svg)](https://microbadger.com/images/flaviostutz/rpi-spotify "Get your own version badge on microbadger.com")
-[![](https://images.microbadger.com/badges/image/flaviostutz/rpi-spotify.svg)](https://microbadger.com/images/flaviostutz/rpi-spotify "Get your own image badge on microbadger.com")
+# rpi-spotify-no-normalisation
 
 You can use this container to create a Spotify Speaker at your home, but you must have a Spotify Premium account.
 
@@ -69,7 +64,3 @@ docker-compose build
 docker login
 docker push flaviostutz/rpi-spotify
 ```
-
-## Screenshots
-
-<img src="screenshot.png" width="200" />
