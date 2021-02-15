@@ -32,7 +32,7 @@ if [ "$DEVICE_NAME" == "equal" ]; then
   fi
 fi
 
-if [ "$NORMALISE_AUDIO" == true ]; then
+if [ "$NORMALISE_AUDIO" == "true" ]; then
   NORMALISATION="--enable-volume-normalisation --initial-volume=100"
 fi
 
