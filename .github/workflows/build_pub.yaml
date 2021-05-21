@@ -15,8 +15,11 @@ jobs:
         uses: crazy-max/ghaction-docker-buildx@v1
         with:
           version: latest
-      - name: login to docker hub
-        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u reichley --password-stdin
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: reichley
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: build the image
         run: |
           docker buildx build --push \
