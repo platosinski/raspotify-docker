@@ -8,14 +8,14 @@ echo "Preparing container..."
 echo "SPOTIFY_NAME=$SPOTIFY_NAME"
 echo "BACKEND_NAME=$BACKEND_NAME"
 echo "DEVICE_NAME=$DEVICE_NAME"
-echo "USERNAME=$USERNAME"
-echo "PASSWORD=$PASSWORD"
+echo "USER=$USER"
+echo "PASS=$PASS"
 
 DEVICE=""
 BACKEND=""
 VERB=""
-USERNAME=""
-PASSWORD=""
+USER=""
+PASS=""
 
 if [ "$VERBOSE" == "true" ]; then
   VERB="-v"
@@ -29,12 +29,12 @@ if [ "$DEVICE_NAME" != "" ]; then
   DEVICE="--device $DEVICE_NAME"
 fi
 
-if [ "$USERNAME" != "" ]; then
-  USERNAME="-u $USERNAME"
+if [ "$USER" != "" ]; then
+  USER="-u $USER"
 fi
 
-if [ "$PASSWORD" != "" ]; then
-  PASSWORD="-p $PASSWORD"
+if [ "$PASS" != "" ]; then
+  PASS="-p $PASS"
 fi
 
 if [ "$DEVICE_NAME" == "equal" ]; then
@@ -70,5 +70,5 @@ fi
 set -e
 
 echo "Starting Raspotify..."
-/usr/bin/librespot $VERB --name "$SPOTIFY_NAME" $BACKEND $DEVICE $USERNAME $PASSWORD --bitrate 320 --disable-audio-cache --enable-volume-normalisation
+/usr/bin/librespot $VERB --name "$SPOTIFY_NAME" $BACKEND $DEVICE $USER $PASS --bitrate 320 --disable-audio-cache --enable-volume-normalisation
 
