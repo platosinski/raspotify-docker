@@ -1,5 +1,7 @@
 # FROM resin/rpi-raspbian
-FROM balenalib/rpi-raspbian
+#FROM balenalib/rpi-raspbian
+ARG ARCH=
+FROM ${ARCH}debian:buster-slim
 
 RUN apt-get update && \
     apt-get -y install alsa-utils libasound2-plugin-equal gettext curl apt-transport-https && \
