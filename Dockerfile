@@ -6,7 +6,7 @@ FROM ${ARCH}debian:buster
 RUN apt-get update && \
     apt-get -y install gnupg2 alsa-utils libasound2-plugin-equal gettext curl apt-transport-https && \
     update-ca-certificates --fresh && \
-    curl -sSL https://dtcooper.github.io/raspotify/key.asc | apt-key add -v - && \
+    curl -skSL https://dtcooper.github.io/raspotify/key.asc | apt-key add -v - && \
     echo 'deb https://dtcooper.github.io/raspotify raspotify main' | tee /etc/apt/sources.list.d/raspotify.list && \
     apt-get update && \
     apt-get -y install raspotify && \
