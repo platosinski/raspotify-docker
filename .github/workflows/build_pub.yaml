@@ -19,7 +19,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           username: reichley
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          password: ${{ secrets.DH_TOKEN }}
       - name: build the image
         run: |
           docker buildx build --push \
