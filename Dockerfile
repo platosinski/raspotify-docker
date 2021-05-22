@@ -1,7 +1,7 @@
 # FROM resin/rpi-raspbian
 #FROM balenalib/rpi-raspbian
 ARG ARCH=
-FROM ${ARCH}debian:buster-slim
+FROM ${ARCH}debian:buster
 
 RUN apt-get update && \
     apt-get -y install alsa-utils libasound2-plugin-equal gettext curl apt-transport-https && \
@@ -16,6 +16,8 @@ RUN apt-get update && \
 # RUN curl -sL https://dtcooper.github.io/raspotify/install.sh | sh
 
 ENV SPOTIFY_NAME RaspotifySpeaker
+ENV USER ''
+ENV PASS ''
 ENV BACKEND_NAME 'alsa'
 ENV DEVICE_NAME 'equal'
 ENV ALSA_SLAVE_PCM 'plughw:0,0'
