@@ -25,6 +25,7 @@ ENV ALSA_SLAVE_PCM 'plughw:0,0'
 ENV ALSA_SOUND_LEVEL '100%'
 ENV VERBOSE 'false'
 ENV EQUALIZATION ''
+ENV NORMALIZE_AUDIO 'false'
 
 COPY /asound.conf /etc/asound.conf
 COPY --chown=spotify:spotify /equalizer.sh /

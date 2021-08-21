@@ -10,12 +10,14 @@ echo "BACKEND_NAME=$BACKEND_NAME"
 echo "DEVICE_NAME=$DEVICE_NAME"
 echo "USER=$USER"
 echo "PASS=$PASS"
+echo "NORMALIZATION=$NORMALIZE_AUDIO"
 
 DEVICE=""
 BACKEND=""
 VERB=""
 USER=""
 PASS=""
+NORMALIZATION="--initial-volume=100"
 
 if [ "$VERBOSE" == "true" ]; then
   VERB="-v"
@@ -44,6 +46,10 @@ if [ "$DEVICE_NAME" == "equal" ]; then
   fi
 fi
 
+if [ "$NORMALIZE_AUDIO" == "true" ]; then
+  NORMALIZATION="--enable-volume-normalisation --initial-volume=100"
+fi
+
 echo "/etc/asound.conf"
 cat /etc/asound.conf
 echo ''
@@ -69,5 +75,5 @@ fi
 set -e
 
 echo "Starting Raspotify..."
-/usr/bin/librespot $VERB --name "$SPOTIFY_NAME" $BACKEND $DEVICE $USER $PASS --bitrate 320 --disable-audio-cache --enable-volume-normalisation
+/usr/bin/librespot $VERB --name "$SPOTIFY_NAME" $BACKEND $DEVICE $USER $PASS --bitrate 320 --disable-audio-cache $NORMALIZATION
 
