@@ -1,5 +1,9 @@
-[![](https://images.microbadger.com/badges/version/derkades/raspotify.svg)](https://microbadger.com/images/derkades/raspotify "Get your own version badge on microbadger.com")
-[![](https://images.microbadger.com/badges/image/derkades/raspotify.svg)](https://microbadger.com/images/derkades/raspotify "Get your own image badge on microbadger.com")
+# rpi-spotify
+[<img src="https://img.shields.io/docker/pulls/flaviostutz/rpi-spotify"/>](https://hub.docker.com/r/flaviostutz/rpi-spotify)
+[<img src="https://img.shields.io/docker/automated/flaviostutz/rpi-spotify"/>](https://hub.docker.com/r/flaviostutz/rpi-spotify)
+
+[![](https://images.microbadger.com/badges/version/flaviostutz/rpi-spotify.svg)](https://microbadger.com/images/flaviostutz/rpi-spotify "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/flaviostutz/rpi-spotify.svg)](https://microbadger.com/images/flaviostutz/rpi-spotify "Get your own image badge on microbadger.com")
 
 You can use this container to create a Spotify Speaker at your home, but you must have a Spotify Premium account.
 
@@ -16,10 +20,44 @@ For more info on configuring your Raspberry Pi for this to work, go to https://g
 
 ## Usage
 
-* Download file docker-compose.yaml
-* Run `docker-compose up -d`
+* Create file docker-compose.yml
+
+```yml
+version: "3.3"
+services:
+  rpi-spotify:
+    image: flaviostutz/rpi-spotify
+    network_mode: host
+    restart: always
+    devices:
+      - /dev/snd:/dev/snd
+    environment:
+      - SPOTIFY_NAME=MyHouse
+      - EQUALIZATION=rock
+```
+
+* If you want to use pulseaudio:
+```yml
+version: "3.3"
+services:
+  rpi-spotify:
+    image: flaviostutz/rpi-spotify
+    network_mode: host
+    restart: always
+    environment:
+      - SPOTIFY_NAME=MyHouse
+      - EQUALIZATION=rock
+      - BACKEND_NAME=alsa
+      - DEVICE_NAME=pulse
+      - PULSE_SERVER=127.0.0.1
+```
+
+* Run ```docker-compose up -d```
+
 * Open Spotify App and click on a speaker icon (Connect to a device)
-* Select the speaker "RaspotifySpeaker"
+
+* Select the speaker "MyHouse"
+
 * Enjoy!
 
 
@@ -27,7 +65,7 @@ For more info on configuring your Raspberry Pi for this to work, go to https://g
 
 * SPOTIFY_NAME: Specifies the name of this speaker (shown in Spotify client)
 
-* DEVICE_NAME: PCM output io device to which the sound will be output using ALSA. Defaults to 'equal' so that you can configure alsa equalization. In this case, configure the target hw using "ALSA_SLAVE_PCM". If empty, will try to get the first available device. If defined to a hardware (eg. "hw:0,0"), equalization won't take place.
+* DEVICE_NAME: PCM output io device to which the sound will be output using ALSA. Defaults to 'equal' so that you can configure alsa equalization. In this case, configure the target hw using "ALSA_SLAVE_PCM". If empty, will try to get the first available device. If defined to a hardware (eg. "hw:0,0"), equalization won't take place. Use 'pulse' for pulseaudio and specify the server in PULSE_SERVER.
 
 * ALSA_SLAVE_PCM: slave device as configured in alsa to which the sound will be sent to. eg. use 'plughw:0,0' for device at card 0, sub 0"
 
@@ -37,6 +75,8 @@ For more info on configuring your Raspberry Pi for this to work, go to https://g
   * profile names: flat, classical, club, dance, bass, treble, live, party, pop, rock, techno
   * bins example: "90 87 87 82 80 80 82 83 91 95"
   * if you wish to interactively test the best equalization parameters, execute ```docker-compose exec rpi-spotify alsamixer -D equal```. On the next screen play with each equalization params, get the desired bin values and set this ENV parameter accordingly as in the example above
+
+* PULSE_SERVER Defines where the pulse server is. See: https://wiki.archlinux.org/index.php/PulseAudio/Configuration
 
 ## Screenshots
 
