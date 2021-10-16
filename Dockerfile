@@ -1,34 +1,28 @@
-# FROM resin/rpi-raspbian
-#FROM balenalib/rpi-raspbian
 ARG ARCH=
-FROM ${ARCH}debian:buster
+FROM ${ARCH}debian:buster-slim
 
-#raspotify install
 RUN apt-get update && \
-    apt-get -y install gnupg2 alsa-utils libasound2-plugin-equal gettext curl apt-transport-https && \
-    update-ca-certificates --fresh && \
-    curl -skSL https://dtcooper.github.io/raspotify/key.asc | apt-key add -v - && \
-    echo 'deb https://dtcooper.github.io/raspotify raspotify main' | tee /etc/apt/sources.list.d/raspotify.list && \
+    apt-get install -y apt-transport-https ca-certificates curl gnupg && \
+    curl -fsSL https://dtcooper.github.io/raspotify/key.asc | gpg --dearmor --yes -o /usr/share/keyrings/raspotify-archive-keyring.gpg && \
+    echo 'deb [arch=armhf signed-by=/usr/share/keyrings/raspotify-archive-keyring.gpg] https://dtcooper.github.io/raspotify raspotify main' > /etc/apt/sources.list.d/raspotify.list && \
     apt-get update && \
-    apt-get -y install raspotify && \
+    apt-get install -y --no-install-recommends \
+      alsa-utils libasound2-plugins libasound2-plugin-equal gettext \
+      raspotify && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN groupadd -g 9003 spotify && useradd -u 9003 -r -g spotify spotify && usermod -a -G audio spotify
-
-ENV SPOTIFY_NAME RaspotifySpeaker
+ENV VERBOSE 'false'
+ENV DEVICE_NAME ''
 ENV USER ''
 ENV PASS ''
-ENV BACKEND_NAME 'alsa'
-ENV DEVICE_NAME 'equal'
-ENV ALSA_SLAVE_PCM 'plughw:0,0'
-ENV ALSA_SOUND_LEVEL '100%'
-ENV VERBOSE 'false'
+ENV ALSA_SLAVE_PCM ''
+ENV ALSA_SOUND_LEVEL ''
 ENV EQUALIZATION ''
 ENV NORMALIZE_AUDIO 'false'
 
-COPY /asound.conf /etc/asound.conf
-COPY --chown=spotify:spotify /equalizer.sh /
+COPY asound.conf /etc/asound.conf
+COPY equalizer.sh /equalizer.sh
+COPY run.sh /run.sh
 
-COPY --chown=spotify:spotify /startup.sh /
-ENTRYPOINT /startup.sh
+CMD ["/run.sh"]

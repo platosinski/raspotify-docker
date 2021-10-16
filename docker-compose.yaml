@@ -1,9 +1,0 @@
-version: '2'
-
-services:
-  rpi-spotify:
-    image: derkades/raspotify
-    network_mode: host
-    devices: ['/dev/snd:/dev/snd']
-    environment:
-      SPOTIFY_NAME: 'Raspberry Pi'
