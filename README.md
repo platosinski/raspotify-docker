@@ -1,20 +1,15 @@
-# rpi-spotify
-[<img src="https://img.shields.io/docker/pulls/flaviostutz/rpi-spotify"/>](https://hub.docker.com/r/flaviostutz/rpi-spotify)
-[<img src="https://img.shields.io/docker/automated/flaviostutz/rpi-spotify"/>](https://hub.docker.com/r/flaviostutz/rpi-spotify)
-
-[![](https://images.microbadger.com/badges/version/flaviostutz/rpi-spotify.svg)](https://microbadger.com/images/flaviostutz/rpi-spotify "Get your own version badge on microbadger.com")
-[![](https://images.microbadger.com/badges/image/flaviostutz/rpi-spotify.svg)](https://microbadger.com/images/flaviostutz/rpi-spotify "Get your own image badge on microbadger.com")
+# raspotify-docker
+[![](https://img.shields.io/docker/pulls/platosinski/raspotify>)](https://hub.docker.com/r/platosinski/raspotify)
+[![](https://img.shields.io/docker/automated/platosinski/raspotify)](https://hub.docker.com/r/platosinski/raspotify)
 
 You can use this container to create a Spotify Speaker at your home, but you must have a Spotify Premium account.
 
 The process run is [librespot](https://github.com/plietar/librespot), an open source client library for Spotify.
 This docker container image leverages the work from [David Cooper](https://dtcooper.github.io/raspotify).
 
-For more info on configuring your Raspberry Pi for this to work, go to https://github.com/flaviostutz/ambience-sound
-
 ## Prerequisites
 
-* A Raspberry Pi (tested on RPi2/3)
+* A Raspberry Pi (tested on RPi 3)
 * Docker
 * docker-compose
 
@@ -33,9 +28,10 @@ services:
       - /dev/snd:/dev/snd
 ```
 
-* If you want to use ALSA equalizer:
+* More verbose example:
 ```yml
 version: "3.3"
+
 services:
   raspotify:
     image: platosinski/raspotify
@@ -44,11 +40,18 @@ services:
     devices:
       - /dev/snd:/dev/snd
     environment:
-      - DEVICE_NAME=equal
-      - EQUALIZATION=rock
+      SPOTIFY_NAME: Raspberry Pi
+      BITRATE: 320
+      ENABLE_AUDIO_CACHE: 'false'
+      ENABLE_NORMALIZATION: 'true'
+      VERBOSE: 'true'
+      INITIAL_VOLUME: 75
+      ALSA_EQUALIZATION: flat
+      ALSA_SOUND_LEVEL: 0.0 dB
+      ALSA_DEVICE_ID: 0
 ```
 
-* If you want to use pulseaudio without ALSA equalizer:
+* If you want to use pulseaudio, you may skip device mapping:
 ```yml
 version: "3.3"
 services:
@@ -57,53 +60,38 @@ services:
     network_mode: host
     restart: always
     environment:
-      - DEVICE_NAME=pulse
-      - PULSE_SERVER=127.0.0.1
-```
-
-* If you want to use pulseaudio with ALSA equalizer:
-```yml
-version: "3.3"
-services:
-  raspotify:
-    image: platosinski/raspotify
-    network_mode: host
-    restart: always
-    environment:
-      - DEVICE_NAME=equal
-      - EQUALIZATION=rock
-      - ALSA_SLAVE_PCM=plug:pulse
-      - PULSE_SERVER=127.0.0.1
+      DEVICE_NAME: pulse
+      PULSE_SERVER: 192.168.0.2 
 ```
 
 * Run ```docker-compose up -d```
 
 * Open Spotify App and click on a speaker icon (Connect to a device)
 
-* Select the speaker "MyHouse"
+* Select the speaker "Raspotify"
 
 * Enjoy!
 
 
-## ENVs
+## Environment variables
 
-* SPOTIFY_NAME: Specifies the name of this speaker (shown in Spotify client)
-
-* DEVICE_NAME: PCM output io device to which the sound will be output using ALSA.
-Defaults to 'plughw:0,0' so that you can run this image with minimum configuration.
-Use 'equal' for equalization and configure the target hw using "ALSA_SLAVE_PCM" (defaults to 'plughw:0,0').
-Use 'pulse' for pulseaudio and specify the server in PULSE_SERVER.
-
-* ALSA_SLAVE_PCM: slave device as configured in alsa to which the sound will be sent to. eg. use 'plughw:0,0' for device at card 0, sub 0"
-
-* ALSA_SOUND_LEVEL: overall sound level on ALSA output. defaults to 100% so that usb sound noises are reduced because there will be needed less amplification
-
-* EQUALIZATION: an equalization profile name or a series of 10 space separated values from 0-100 (one for each equalizer bin)
-  * profile names: flat, classical, club, dance, bass, treble, live, party, pop, rock, techno
-  * bins example: "90 87 87 82 80 80 82 83 91 95"
-  * if you wish to interactively test the best equalization parameters, execute ```docker-compose exec raspotify alsamixer -D equal```. On the next screen play with each equalization params, get the desired bin values and set this ENV parameter accordingly as in the example above
-
-* PULSE_SERVER Defines where the pulse server is. See: https://wiki.archlinux.org/index.php/PulseAudio/Configuration
+| Variable name | Description | Default |
+| --- | --- | --- |
+| SPOTIFY_NAME | Name of this device (shown in Spotify client) | Raspotify |
+| DEVICE_NAME | ALSA pcm to which the sound will be output. You can change ALSA soundcard and device with ALSA_CARD_ID and ALSA_DEVICE_ID. Use 'pulse' for pulseaudio and specify the server in PULSE_SERVER. | default |
+| USER | Username to sign in with | |
+| PASS | Password | |
+| BITRATE | Bitrate (kbps) | 160 (from librespot) |
+| ENABLE_AUDIO_CACHE | Enable caching of the audio data. | 'false' |
+| ENABLE_NORMALIZATION | Enables volume normalisation for librespot | 'true' |
+| INITIAL_VOLUME | Initial volume in % from 0-100. | 50 (from librespot) |
+| OPTS | Additional options for librespot. See: https://github.com/librespot-org/librespot/wiki/Options | |
+| VERBOSE | Print commands executed in run.sh | 'false' |
+| ALSA_SOUND_LEVEL | Sound level on ALSA device. | 0.0 dB |
+| ALSA_EQUALIZATION | An equalization profile name or a series of 10 space separated values from 0-100 (one for each equalizer bin). Available profile names: flat, classical, club, dance, bass, treble, live, party, pop, rock, techno. Bins example: "90 87 87 82 80 80 82 83 91 95". If you wish to interactively test the best equalization parameters, execute ```docker-compose exec raspotify alsamixer -D equal```. On the next screen play with each equalization params, get the desired bin values and set this ENV parameter accordingly as in the example above. | | 
+| ALSA_CARD_ID | Soundcard number. See: https://www.alsa-project.org/wiki/Asoundrc | 0 | 
+| ALSA_DEVICE_ID | Device number | 0 |
+| PULSE_SERVER | Pulse server IP/hostname. See: https://wiki.archlinux.org/index.php/PulseAudio#Environment_variables | |
 
 ## Screenshots
 

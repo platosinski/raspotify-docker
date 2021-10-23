@@ -1,70 +1,61 @@
 #!/bin/bash
 
-set -xe
+set -e
+if [ "$VERBOSE" == "true" ]; then
+  set -x
+fi
 
 echo "Preparing container..."
 
-VERBOSE_ARG=""
-NAME_ARG="--name Raspotify"
-BACKEND_ARG="--backend alsa"
-DEVICE_ARG=""
-USER_ARG=""
-PASS_ARG=""
-BITRATE_ARG="--bitrate 320"
-CACHE_ARG="--disable-audio-cache"
-NORMALIZATION_ARG=""
-INITIAL_VOLUME_ARG="--initial-volume=100"
-
-if [ "$VERBOSE" == "true" ]; then
-  VERBOSE_ARG="-v"
+if [ "$ALSA_SOUND_LEVEL" != "" ]; then
+  echo "Applying sound level to $ALSA_SOUND_LEVEL"
+  amixer -D $DEVICE_NAME cset numid=1 "$ALSA_SOUND_LEVEL"
 fi
 
-if [ "$SPOTIFY_NAME" != "" ]; then
-  NAME_ARG="--name '$SPOTIFY_NAME'"
+if [ "$ALSA_EQUALIZATION" != "" ]; then
+  _ALSA_EQUAL_SLAVE_PCM="$DEVICE_NAME"
+  DEVICE_NAME=equal
+  echo "Applying equalization '$ALSA_EQUALIZATION'"
+  /equalizer.sh "$ALSA_EQUALIZATION"
 fi
+
+PARAMS=()
+
+if [ "$SPOTIFY_NAME" == "" ]; then
+  SPOTIFY_NAME=Raspotify
+fi
+PARAMS+=(--name "$SPOTIFY_NAME")
+
+PARAMS+=(--backend alsa)
 
 if [ "$DEVICE_NAME" != "" ]; then
-  DEVICE_ARG="--device $DEVICE_NAME"
+  PARAMS+=(--device $DEVICE_NAME)
 fi
 
 if [ "$USER" != "" ]; then
-  USER_ARG="-u $USER"
+  PARAMS+=(--user $USER)
 fi
 
 if [ "$PASS" != "" ]; then
-  PASS_ARG="-p $PASS"
+  PARAMS+=(--password $PASS)
 fi
 
-if [ "$NORMALIZE_AUDIO" == "true" ]; then
-  NORMALIZATION_ARG="--enable-normalization"
+if [ "$BITRATE" != "" ]; then
+  PARAMS+=(--bitrate $BITRATE)
 fi
 
-if [ "$VOLUME" != "" ]; then
-  INITIAL_VOLUME_ARG="--initial-volume=$VOLUME"
+if [ "$ENABLE_AUDIO_CACHE" != "true" ]; then
+  PARAMS+=(--disable-audio-cache)
 fi
 
-if [ "$DEVICE_NAME" == "equal" ]; then
-  if [ "$EQUALIZATION" != "" ]; then
-    echo "Applying equalization $EQUALIZATION"
-    /equalizer.sh "$EQUALIZATION"
-  fi
+if [ "$ENABLE_NORMALIZATION" == "true" ]; then
+  PARAMS+=(--enable-volume-normalisation)
 fi
 
-set +e
-if [ "$ALSA_SOUND_LEVEL" != "" ]; then
-  echo "Applying sound level to $ALSA_SOUND_LEVEL"
-  #TODO: enhance this logic
-  amixer cset numid=1 "$ALSA_SOUND_LEVEL"
-  amixer cset numid=2 "$ALSA_SOUND_LEVEL"
-  amixer cset numid=3 "$ALSA_SOUND_LEVEL"
-  amixer cset numid=4 "$ALSA_SOUND_LEVEL"
-  amixer cset numid=5 "$ALSA_SOUND_LEVEL"
-  amixer cset numid=6 "$ALSA_SOUND_LEVEL"
-  amixer cset numid=7 "$ALSA_SOUND_LEVEL"
-  amixer cset numid=8 "$ALSA_SOUND_LEVEL"
+if [ "$INITIAL_VOLUME" != "" ]; then
+  PARAMS+=(--initial-volume $INITIAL_VOLUME)
 fi
-set -e
 
 echo "Starting Raspotify..."
-/usr/bin/librespot $VERBOSE_ARG $NAME_ARG $BACKEND_ARG $DEVICE_ARG $USER_ARG $PASS_ARG $BITRATE_ARG $CACHE_ARG $NORMALIZATION_ARG $INITIAL_VOLUME_ARG
+/usr/bin/librespot "${PARAMS[@]}" $OPTS
 

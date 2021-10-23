@@ -1,5 +1,4 @@
-ARG ARCH=
-FROM ${ARCH}debian:buster-slim
+FROM debian:buster-slim
 
 RUN apt-get update && \
     apt-get install -y apt-transport-https ca-certificates curl gnupg && \
@@ -12,14 +11,21 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-ENV VERBOSE 'false'
-ENV DEVICE_NAME ''
+ENV SPOTIFY_NAME 'Raspotify'
+ENV DEVICE_NAME 'default'
 ENV USER ''
 ENV PASS ''
-ENV ALSA_SLAVE_PCM ''
-ENV ALSA_SOUND_LEVEL ''
-ENV EQUALIZATION ''
-ENV NORMALIZE_AUDIO 'false'
+ENV BITRATE ''
+ENV ENABLE_AUDIO_CACHE 'false'
+ENV ENABLE_NORMALIZATION 'true'
+ENV INITIAL_VOLUME ''
+ENV OPTS ''
+ENV VERBOSE 'false'
+ENV ALSA_EQUALIZATION ''
+ENV ALSA_SOUND_LEVEL '0.0 dB'
+ENV ALSA_CARD_ID 0
+ENV ALSA_DEVICE_ID 0
+ENV _ALSA_EQUAL_SLAVE_PCM 'default'
 
 COPY asound.conf /etc/asound.conf
 COPY equalizer.sh /equalizer.sh
