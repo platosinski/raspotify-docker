@@ -1,5 +1,5 @@
 # raspotify-docker
-[![](https://img.shields.io/docker/pulls/platosinski/raspotify>)](https://hub.docker.com/r/platosinski/raspotify)
+[![](https://img.shields.io/docker/pulls/platosinski/raspotify)](https://hub.docker.com/r/platosinski/raspotify)
 [![](https://img.shields.io/docker/automated/platosinski/raspotify)](https://hub.docker.com/r/platosinski/raspotify)
 
 You can use this container to create a Spotify Speaker at your home, but you must have a Spotify Premium account.

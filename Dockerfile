@@ -2,8 +2,8 @@ FROM debian:buster-slim
 
 RUN apt-get update && \
     apt-get install -y apt-transport-https ca-certificates curl gnupg && \
-    curl -fsSL https://dtcooper.github.io/raspotify/key.asc | gpg --dearmor --yes -o /usr/share/keyrings/raspotify-archive-keyring.gpg && \
-    echo 'deb [arch=armhf signed-by=/usr/share/keyrings/raspotify-archive-keyring.gpg] https://dtcooper.github.io/raspotify raspotify main' > /etc/apt/sources.list.d/raspotify.list && \
+    curl -kfsSL https://dtcooper.github.io/raspotify/key.asc | gpg --dearmor --yes -o /usr/share/keyrings/raspotify-archive-keyring.gpg && \
+    echo 'deb [signed-by=/usr/share/keyrings/raspotify-archive-keyring.gpg] https://dtcooper.github.io/raspotify raspotify main' > /etc/apt/sources.list.d/raspotify.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
       alsa-utils libasound2-plugins libasound2-plugin-equal gettext \
